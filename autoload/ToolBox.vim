@@ -11,6 +11,11 @@ if exists("g:loaded_ToolBox")
 endif
 let g:loaded_ToolBox = 1
 
+" hello world function for testing purposes
+func ToolBox#HelloWorlds()
+  echo "hello worlds!"
+endfunc
+
 " mark the current window with an identifier
 "
 " Comments:
@@ -31,8 +36,8 @@ func ToolBox#MarkWindow(...)
   else
     let w:ToolBox_window_mark = ToolBox#GetWindowMark()
     if w:ToolBox_window_mark == ""
-      let l:marks = ToolBox#GetWindowMarks()
-      let w:ToolBox_window_mark = max(l:marks) + 1
+      let l:Marks = ToolBox#GetWindowMarks()
+      let w:ToolBox_window_mark = max(l:Marks) + 1
     endif
   endif
   return w:ToolBox_window_mark
@@ -60,35 +65,35 @@ endfunc
 " or an empty string, if this identifier does not exist
 func ToolBox#GetWindowMark( ... )
   let l:winnr = 0
-  let l:tabnr = 0
+  let l:Tabnr = 0
   let l:defval = ""
   if a:0 > 0
     let l:winnr = a:1
   endif
   if a:0 > 1
-    let l:tabnr = a:1
+    let l:Tabnr = a:1
   endif
   if a:0 > 2
     let l:defval = a:3
   endif
-  return gettabwinvar( l:tabnr, a:winnr, 'ToolBox_window_mark', l:defval )
+  return gettabwinvar( l:Tabnr, a:winnr, 'ToolBox_window_mark', l:defval )
 endfunc
 
 " get a list of all existing window marks
 "
 " Return Value:
 " a list containing all marks of all windows
-func ToolBox#GetWindowMarks
-  let l:marks = []
-  for l:tabnr in range(1, tabpagenr('$'))
-    for l:winnr in range(1, tabpagewinnr(l:tabnr, '$'))
-      let l:mark = ToolBox#GetWindowMark( l:winnr, l:tabnr )
+func ToolBox#GetWindowMarks()
+  let l:Marks = []
+  for l:Tabnr in range(1, tabpagenr('$'))
+    for l:winnr in range(1, tabpagewinnr(l:Tabnr, '$'))
+      let l:mark = ToolBox#GetWindowMark( l:winnr, l:Tabnr )
       if l:mark != ""
-        call add( l:marks, l:mark )
+        call add( l:Marks, l:mark )
       endif
     endfor
   endfor
-  return l:marks
+  return l:Marks
 endfunc
 
 " search a marked window and return [tabnr, winnr]
@@ -104,10 +109,10 @@ endfunc
 " and winnr is its number relative to the other windows in the containing tab.
 " returns an empty list, if no window could be found for this mark
 func ToolBox#GetWindowNumberByMark(mark)
-  for l:tabnr in range(1, tabpagenr('$'))
-    for l:winnr in range(1, tabpagewinnr(l:tabnr, '$'))
-      if ToolBox#GetWindowMark( l:winnr, l:tabnr ) == a:mark
-        return [ l:tabnr, l:winnr ]
+  for l:Tabnr in range(1, tabpagenr('$'))
+    for l:winnr in range(1, tabpagewinnr(l:Tabnr, '$'))
+      if ToolBox#GetWindowMark( l:winnr, l:Tabnr ) == a:mark
+        return [ l:Tabnr, l:winnr ]
       endif
     endfor
   endfor
