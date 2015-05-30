@@ -12,11 +12,6 @@ if exists("g:loaded_WindowMarkers")
 endif
 let g:loaded_WindowMarkers = 1
 
-" hello worlds function for testing purposes
-func WindowMarkers#HelloWorlds()
-  echo "hello worlds!"
-endfunc
-
 " mark the current window with an identifier
 "
 " Comments:
