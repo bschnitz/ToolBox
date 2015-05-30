@@ -5,7 +5,6 @@
 " License:	    This file is placed in the public domain.
 " Comments:     
 " · The code in this file shall be at most 80 characters in width
-" Todo: see s:Cheet.filter_regions
 
 if exists("g:loaded_WindowMarkers")
   finish
