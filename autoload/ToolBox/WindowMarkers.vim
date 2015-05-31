@@ -11,6 +11,9 @@ if exists("g:loaded_ToolBox_WindowMarkers")
 endif
 let g:loaded_ToolBox_WindowMarkers = 1
 
+
+"H Implementation
+
 " mark the current window with an identifier
 "
 " Comments:
