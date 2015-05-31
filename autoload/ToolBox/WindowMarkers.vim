@@ -6,10 +6,10 @@
 " Comments:     
 " · The code in this file shall be at most 80 characters in width
 
-if exists("g:loaded_WindowMarkers")
+if exists("g:loaded_ToolBox_WindowMarkers")
   finish
 endif
-let g:loaded_WindowMarkers = 1
+let g:loaded_ToolBox_WindowMarkers = 1
 
 " mark the current window with an identifier
 "
@@ -24,14 +24,14 @@ let g:loaded_WindowMarkers = 1
 "
 " Return Value:
 " the chosen identifier
-func WindowMarkers#MarkWindow(...)
+func ToolBox#WindowMarkers#MarkWindow(...)
   let w:WindowMarkers_window_mark = ""
   if a:0 > 0
     let w:WindowMarkers_window_mark = a:1
   else
-    let w:WindowMarkers_window_mark = WindowMarkers#GetWindowMark()
-    if w:WindowMarkers_window_mark == ""
-      let l:Marks = WindowMarkers#GetWindowMarks()
+    let w:WindowMarkers_window_mark = ToolBox#WindowMarkers#GetWindowMark()
+    if w:WindowMarkers_window_mark ==# ""
+      let l:Marks = ToolBox#WindowMarkers#GetWindowMarks()
       let w:WindowMarkers_window_mark = max(l:Marks) + 1
     endif
   endif
@@ -58,7 +58,7 @@ endfunc
 " Return Value:
 " the identifier (mark) for the specified window,
 " or an empty string, if this identifier does not exist
-func WindowMarkers#GetWindowMark( ... )
+func ToolBox#WindowMarkers#GetWindowMark( ... )
   let l:winnr = 0
   let l:Tabnr = 0
   let l:defval = ""
@@ -78,11 +78,11 @@ endfunc
 "
 " Return Value:
 " a list containing all marks of all windows
-func WindowMarkers#GetWindowMarks()
+func ToolBox#WindowMarkers#GetWindowMarks()
   let l:Marks = []
   for l:Tabnr in range(1, tabpagenr('$'))
     for l:winnr in range(1, tabpagewinnr(l:Tabnr, '$'))
-      let l:mark = WindowMarkers#GetWindowMark( l:winnr, l:Tabnr )
+      let l:mark = ToolBox#WindowMarkers#GetWindowMark( l:winnr, l:Tabnr )
       if l:mark != ""
         call add( l:Marks, l:mark )
       endif
@@ -103,15 +103,29 @@ endfunc
 " [tabnr, winnr] where tabnr is the tab number containing the window in question
 " and winnr is its number relative to the other windows in the containing tab.
 " returns an empty list, if no window could be found for this mark
-func WindowMarkers#GetWindowNumberByMark(mark)
+func ToolBox#WindowMarkers#GetWindowNumberByMark(mark)
   for l:Tabnr in range(1, tabpagenr('$'))
     for l:winnr in range(1, tabpagewinnr(l:Tabnr, '$'))
-      if WindowMarkers#GetWindowMark( l:winnr, l:Tabnr ) == a:mark
+      if ToolBox#WindowMarkers#GetWindowMark( l:winnr, l:Tabnr ) ==# a:mark
         return [ l:Tabnr, l:winnr ]
       endif
     endfor
   endfor
   return []
+endfunc
+
+" test if the window specified by mark exists
+"
+" Comments:
+" uses w:WindowMarkers_window_mark; the mark "" may not be searched for
+"
+" Arguments:
+" mark - the identifier of the window in question
+"
+" Return Value:
+" 1 if the window exists, 0 otherwise
+func ToolBox#WindowMarkers#MarkedWindowExists(mark)
+  return ! empty(ToolBox#WindowMarkers#GetWindowNumberByMark(a:mark))
 endfunc
 
 " search a marked window and focus it
@@ -126,8 +140,8 @@ endfunc
 " [tabnr, winnr] where tabnr is the tab number containing the window in question
 " and winnr is its number relative to the other windows in the containing tab.
 " returns an empty list, if no window could be found for this mark
-func WindowMarkers#GoToWindowByMark(mark)
-  let l:winpos = WindowMarkers#GetWindowNumberByMark(a:mark)
+func ToolBox#WindowMarkers#GoToWindowByMark(mark)
+  let l:winpos = ToolBox#WindowMarkers#GetWindowNumberByMark(a:mark)
   if len(l:winpos) > 0
     exe "tabnext ".l:winpos[0]
     exe l:winpos[1] . "wincmd w"
