@@ -139,4 +139,45 @@ func! ToolBox#GetAbsPath(absdir, relpath)
   endif
 endfunc
 
+" get the filetype (detected by vim) of a file
+"
+" Arguments:
+" filepath - the path to the file whose filetype shall be detected
+func! ToolBox#DetectFiletype( filepath )
+  " store bufhidden setting
+  let l:bh = &bh
+
+  " store the current buffers number to be able to switch back
+  let l:bufnr = bufnr('.')
+
+  " set bufhidden to hide, to make it possible to hide current buffer
+  set bh=hide
+
+  let l:dstbuf = bufnr(a:filepath)
+  if l:dstbuf != -1
+    " buffer already open, just change to it
+    exe l:dstbuf . "bnext"
+
+    " get the filetype
+    let l:filetype = &ft
+  else
+    " open the file in a new buffer
+    exe "silent view ".a:filepath
+
+    " get the filetype
+    let l:filetype = &ft
+
+    " close the recently opened buffer
+    bdelete
+  endif
+
+  " get back to the previously opened buffer
+  exe l:bufnr . "bnext"
+
+  " restore bufhidden setting
+  let &bh = l:bh
+
+  return l:filetype
+endfunc
+
 "H vim: set tw=80 colorcolumn=+1 :
