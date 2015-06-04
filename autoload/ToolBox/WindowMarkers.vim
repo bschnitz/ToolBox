@@ -62,19 +62,11 @@ endfunc
 " the identifier (mark) for the specified window,
 " or an empty string, if this identifier does not exist
 func ToolBox#WindowMarkers#GetWindowMark( ... )
-  let l:winnr = 0
-  let l:Tabnr = 0
-  let l:defval = ""
-  if a:0 > 0
-    let l:winnr = a:1
-  endif
-  if a:0 > 1
-    let l:Tabnr = a:1
-  endif
-  if a:0 > 2
-    let l:defval = a:3
-  endif
-  return gettabwinvar( l:Tabnr, l:winnr, 'WindowMarkers_window_mark', l:defval )
+  let l:winnr = a:0 > 0 ? a:1 : 0
+  let l:Tabnr = a:0 < 2 || a:2 == 0 ? tabpagenr() : a:2
+  let l:defval = a:0 > 2 ? a:3 : ""
+  let l:var = gettabwinvar( l:Tabnr, l:winnr, 'WindowMarkers_window_mark', l:defval )
+  return l:var
 endfunc
 
 " get a list of all existing window marks
