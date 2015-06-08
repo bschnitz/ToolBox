@@ -198,6 +198,8 @@ The plugin is published unter the GNU General Public License Version 3 (GPL v3).
 ================================================================================
 5. CHANGELOG                                                 *toolbox-changelog*
 
+First public release: 2015/06/09~
+
 ================================================================================
 6. CONTACT                                                     *toolbox-contact*
 
