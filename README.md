@@ -25,6 +25,6 @@ Tool Box is licensed under version 3 of the GNU General Public License.
 
 #### CONTACT
 
-Benjamin Schnitzler <benjaminschnitzler+toolbox@googlemail.com>
+Benjamin Schnitzler <benjamin.schnitzler+toolbox@googlemail.com> .
 
 [1]: https://github.com/gmarik/Vundle.vim
