@@ -16,14 +16,8 @@ You may use [Vundle][1] to install Tool Box.
 
 #### WHERE TO GET DOCUMENTATION
 
-Use
-
-    ```vim
-    :help toolbox
-    ```
-
-from within vim, or look at the source code directly, as it is well commented.
-
+Use `:help toolbox` from within vim (after installation), or look at the source
+code directly, as it is well commented.
 
 #### LICENSE
 
