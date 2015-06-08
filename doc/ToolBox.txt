@@ -1,0 +1,204 @@
+*Toolbox.txt*     ToolBox, various tools for scripting vim
+*ToolBox* *Toolbox* *toolbox* *tool-box*
+
+                               ToolBox Reference
+
+================================================================================
+CONTENTS
+
+    1. About ToolBox                                |toolbox-about|
+       1. About ToolBox#WindowMarkers               |windowmarkers-about|
+    2. Function Reference for ToolBox               |toolbox-functions|
+    3. ToolBox#WindowMarkers                        |windowmarkers|
+       1. Usage                                     |windowmarkers-usage|
+       2. Function Reference                        |windowmarkers-functions|
+    4. Credits and License                          |toolbox-credits|
+    5. Changelog                                    |toolbox-changelog|
+    6. Contact                                      |toolbox-contact|
+
+================================================================================
+1. ABOUT TOOL BOX                                                *toolbox-about*
+
+ToolBox is a collection of various tools (functions) which shall ease scripting
+vim.
+
+Currently it is divided into two parts of functions for autoload. One part of
+various independent functions prefixed with ToolBox# and another part prefixed
+with ToolBox#WindowMarkers# .
+
+Some of the discussed tools may only work on Linux/Unix.
+
+1.1 ABOUT WINDOW MARKERS                                   *windowmarkers-about*
+
+This is a part of ToolBox which enables the user to mark a window with an
+identifier, which can be used to reach a window marked with it. Unlike the
+window number, which is provided by vim, this mark does not change, even after
+rearranging the windows.
+
+================================================================================
+2. FUNCTION REFERENCE FOR TOOL BOX                           *toolbox-functions*
+
+*ToolBox#InitRememberLastTabAndWindow()*
+
+  After calling this function ToolBox will at any time remember the combination
+  of the last tab and window visited. If a window mark exists (see
+  |windowmarkers-about|) for that window, it will be remembered, too.
+
+*ToolBox#GetActTabAndWin()*
+
+  Returns [tabnumber, windownumber, windowmark] for the current window. If not
+  set, windowmark defaults to "".
+
+*ToolBox#GoToTabAndWin(winnr,tabnr)*
+
+  Moves the input focus to the specified window.
+
+  Arguments:
+  winnr - the number of the destination window
+  tabnr - optional, the number of the destination tab,
+          defaults to the current tab's number
+
+*ToolBox#GetLastTabAndWin()*
+
+  This function will only work, if |ToolBox#InitRememberLastTabAndWindow()| was
+  invoked to remember the necessary informations about the last visited window.
+
+  Returns the same list as |ToolBox#GetActTabAndWin()| for the previously
+  visited window. If there was no previously visited window, or
+  |ToolBox#InitRememberLastTabAndWindow()| wasn't called before changing to the
+  current window, an empty list will be returned.
+
+*ToolBox#SubstituteNoMagic(string,match,replacement,flags)*
+
+  Substitute literally <match> by <replacement> in <string>. <flags> is optional
+  an equals the <flags> argument for |substitute()|. (Literal replacement means,
+  that any character in <match>, which has a special meaning, will be escaped.)
+
+*ToolBox#SubstituteFromDictionary(string,dict)*
+
+  Substitute the keys from <dict> occeuring in <string> with the
+  corresponding dictionary values (see |dict|). Substitution is done using
+  |ToolBox#SubstituteNoMagic| and it is always substituted globally. The order
+  in which the substitutions takes place is undetermined.
+
+*ToolBox#FindLineBackwards(pattern,linenr)*
+  
+  Find a line containing <pattern> backwards (towards the beginning of the
+  file). If the optional <linenr> is given, start on the line with that number,
+  else start on the current line.
+
+  Returns the number of the line containing <pattern> or 0, if no such line was
+  found. (The first line of a vim buffer has linenumber 1.)
+
+*ToolBox#IsAbsPath(path)*
+
+  Returns true, if path starts with '/' and false otherwise.
+
+*ToolBox#GetAbsPath(absdir,relpath)*
+
+  Creates an absolute path from relpath by prefixing it with absdir, if it was
+  not already an absolute path, in which case it will be returned unmodified.
+
+*ToolBox#DetectFiletype(filepath)*
+
+  Returns the |filetype| (&filetype) for the specified file. This is done by
+  temporarily loading the file into a buffer and then unloading it and switching
+  back to the current buffer. Takes in account, that the file might already be
+  loaded or even equals the current buffer.
+
+================================================================================
+3. TOOL BOX, WINDOW MARKERS                                      *windowmarkers*
+
+3.1 Usage of ToolBox#WindowMarkers                         *windowmarkers-usage*
+
+Window markers can be used to mark a window with an arbitrary string. This
+string should not be "", because the empty string is handled and returned by
+various functions as a synonym for "no mark exists".
+
+The advantage of a window mark over the windownumber provided by vim is, that it
+does not change after rearranging windows. It is stored in the internal
+'w:WindowMarkers_window_mark' variable and is thought to be a unique identifier
+(although a user may provide the same mark for several windows, if he really
+thinks, that this is a reasonable thing to do).
+
+To mark a window, one can use the |ToolBox#WindowMarkers#MarkWindow| function.
+If one does not provide a mark to that function, it will provide one itself,
+make sure, that it is unique and return it:
+>
+  :let mark = ToolBox#WindowMarkers#MarkWindow()
+
+Now one can get at every time the windownumber and the tabnumber of the marked
+window by using |ToolBox#WindowMarkers#GetWindowNumberByMark|:
+>
+  :let [tabnr, winnr] = ToolBox#WindowMarkers#GetWindowNumberByMark(mark)
+
+One may even move to that window directly by using the convenience functions
+|ToolBox#WindowMarkers#GoToWindowByMark|:
+>
+  :call ToolBox#WindowMarkers#GoToWindowByMark(mark)
+
+See |windowmarkers-functions| for an overview over all functions in the
+WindowMarkers script. See also |toolbox-functions|; there are some general
+purpose functions which also use WindowMarkers.
+
+
+3.2 Function Reference for ToolBox#WindowMarkers       *windowmarkers-functions*
+
+*ToolBox#WindowMarkers#MarkWindow(mark)*
+
+  Sets the mark for the current window. <mark> is optional and should never be
+  an empty string (""). If mark is not given, MarkWindow will find a unique mark
+  an assign it to the window. The mark assigned will always be returned.
+
+*ToolBox#WindowMarkers#GetWindowMark(winnr,tabnr,defval)*
+
+  Get the mark for the specified window.
+
+  Arguments:
+  winnr  - optional, the number of the specified window, or 0 for the current
+           window, defaulst to 0
+  tabnr  - optional, either a tab's number, or 0 for the current tab, defaults
+           to 0
+  defval - optional, a default value for the mark, in case it does not exist,
+           defaults to ""
+
+  If winnr == 0 and tabnr != 0, the function is not determined to return
+  anything useful.
+
+  Returns the mark of the specified window, or <defval>, if the specified window
+  does not exist, or has no mark.
+
+*ToolBox#WindowMarkers#GetWindowMarks()*
+
+  Get a list containing the marks of all windows having such a mark.
+
+*ToolBox#WindowMarkers#GetWindowNumberByMark(mark)*
+
+  Search for a marked window and return [tabnuber, windownumber] for that
+  window. "" should not be searched for.
+
+*ToolBox#WindowMarkers#MarkedWindowExists(mark)*
+
+  Returns 1, if a window with the specified mark exists or 0 otherwise. ""
+  should not be searched for.
+
+*ToolBox#WindowMarkers#GoToWindowByMark(mark)*
+
+  Moves the focus to the window specified by mark. Mark should not be "".
+  Returns [tabnumber, windownumber] for the found window or [] if the window
+  specified by mark could not be found.
+
+================================================================================
+4. CREDITS AND LICENSE                       *toolbox-license* *toolbox-credits*
+
+Developed by Benjamin Schnitzler <github.com/bschnitz>.
+
+The plugin is published unter the GNU General Public License Version 3 (GPL v3).
+
+================================================================================
+5. CHANGELOG                                                 *toolbox-changelog*
+
+================================================================================
+6. CONTACT                                                     *toolbox-contact*
+
+E-mail to <benjamin.schnitzler+toolbox@googlemail.com> .

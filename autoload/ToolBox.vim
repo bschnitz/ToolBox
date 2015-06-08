@@ -110,7 +110,7 @@ endfunc
 " Comments:
 " · operates on the current buffer
 " · doesn't wrap at the end/beginning of the file
-func! ToolBox#FindLineBackwards( pattern )
+func! ToolBox#FindLineBackwards( pattern, ... )
   let l:linenr = a:0 > 0 ? a:1 : line('.')
   while l:linenr > 0 && match(getline(l:linenr), a:pattern) == -1
     let l:linenr -= 1
